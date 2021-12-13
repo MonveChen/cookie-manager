@@ -1,6 +1,6 @@
 {
-  "name": "cookie-manager",
-  "version": "1.0.1",
+  "name": "@monvechen/cookie-manager",
+  "version": "1.0.2",
   "description": "for manager cookies",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -12,7 +12,8 @@
   ],
   "scripts": {
     "build": "rm -rf ./dist && ./node_modules/.bin/tsc",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "link": "npm run build && npm link"
   },
   "repository": {
     "type": "git",
