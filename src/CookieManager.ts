@@ -2,7 +2,7 @@
  * @Author: Monve
  * @Date: 2021-12-10 15:59:20
  * @LastEditors: Monve
- * @LastEditTime: 2021-12-13 10:33:37
+ * @LastEditTime: 2021-12-13 10:53:51
  * @FilePath: /cookie-manager/src/CookieManager.ts
  */
 
@@ -22,10 +22,15 @@ function arrayUnique(arr: sCook.Cookie[]) {
   return s;
 }
 
+interface extendType {
+  pathReg: RegExp,
+  originStr: string
+}
+
 export class CookieManager {
   domains: string[];
   domainReg: RegExp[];
-  list: { [name: string]: { [name: string]: sCook.Cookie } }
+  list: { [name: string]: { [name: string]: sCook.Cookie & extendType } }
   length: number;
 
   constructor() {
@@ -37,7 +42,7 @@ export class CookieManager {
 
 
 
-  Store = (url: string, cook: string[]) => {
+  store = (url: string, cook: string[]): void => {
 
     const u = new URL(url);
 
@@ -45,8 +50,8 @@ export class CookieManager {
     let t = this;
     for (const i in cook) {
       (function () {
-        let objs = cookieTool.parse(cook[i], u.pathname, u.hostname);
-        (objs as any).pathReg = new RegExp('^' + objs.path);
+        let objs = cookieTool.parse(cook[i], u.pathname, u.hostname) as sCook.Cookie & extendType;
+        objs.pathReg = new RegExp('^' + objs.path);
         if (!objs.domain) {
           objs.domain = 'global'
         }
@@ -57,6 +62,7 @@ export class CookieManager {
           let reg = objs.domain?.match(/^\./) ? objs.domain + '$' : '^' + objs.domain + '$';
           t.domainReg.push(new RegExp(reg));
         }
+        objs.originStr = cook[i];
         t.list[objs.domain][objs.name] = objs;
       })();
     }
@@ -69,7 +75,7 @@ export class CookieManager {
 
   };
 
-  Search = (domain: string, path: string, date: string | Date | number, browser: boolean, secure: boolean): sCook.Cookie[] => {
+  search = (domain: string, path: string, date: string | Date | number, browser: boolean, secure: boolean): sCook.Cookie[] => {
 
     let f: sCook.Cookie[] = [];
     for (const i in this.domainReg) {
@@ -97,24 +103,24 @@ export class CookieManager {
 
   };
 
-  Tokenize = (arr: sCook.Cookie[]) => {
+  tokenize = (arr: sCook.Cookie[]): string => {
 
     return cookieTool.tokenize(arrayUnique(arr));
 
   };
 
-  prepare = (url: string, browser: boolean = false) => {
+  prepare = (url: string, browser: boolean = false): string => {
 
     const u = new URL(url);
     const d = new Date();
-    return this.Tokenize(this.Search(
+    return this.tokenize(this.search(
       u.hostname,
       u.pathname,
       d,
       browser,
       u.protocol == 'https:'
     ).concat(
-      this.Search(
+      this.search(
         '.' + u.hostname,
         u.pathname,
         d,
@@ -123,6 +129,17 @@ export class CookieManager {
       )
     ));
 
+  }
+
+  exportOriginStrArr = (): string[] => {
+    const arr: string[] = [];
+    for (const domain of Object.keys(this.list)) {
+      for (const key of Object.keys(this.list[domain])) {
+        const { originStr } = this.list[domain][key]
+        arr.push(originStr)
+      }
+    }
+    return arr
   }
 
 }
