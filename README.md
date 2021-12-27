@@ -14,12 +14,12 @@ import { CookieManager } from "@monvechen/cookie-manager"
 const cm = new CookieManager();
 
 cm.store( 
- 'https://example.com/test/path', 
  [
   'cna=111; Expires=someDate; domain=.example.com; path=/; secure',
   'name=222; Expires=someDate; domain=.example.com; path=/; HttpOnly'
    'cannel=333; Expires=someDate; domain=www.example.com; path=/; HttpOnly'
- ]
+ ],
+ 'https://example.com/test/path'
 );
 
 const cookies = cm.prepare( 'http://example.com' );
