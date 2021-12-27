@@ -2,7 +2,7 @@
  * @Author: Monve
  * @Date: 2021-12-10 15:59:20
  * @LastEditors: Monve
- * @LastEditTime: 2021-12-27 10:20:56
+ * @LastEditTime: 2021-12-27 17:22:34
  * @FilePath: /cookie-manager/src/CookieManager.ts
  */
 
@@ -46,15 +46,21 @@ export class CookieManager {
 
 
 
-  store = (url: string, cook: string[]): void => {
+  store = (cook: string[], url?: string): void => {
 
-    const u = new URL(url);
+    let defaultPath = undefined
+    let defaultDomain = undefined
+    if (url) {
+      const u = new URL(url);
+      defaultPath = u.pathname
+      defaultDomain = u.hostname
+    }
 
     if (typeof cook == 'string') cook = [cook];
     let t = this;
     for (const i in cook) {
       (function () {
-        let objs = cookieTool.parse(cook[i], u.pathname, u.hostname) as sCook.Cookie & extendType;
+        let objs = cookieTool.parse(cook[i], defaultPath, defaultDomain) as sCook.Cookie & extendType;
         objs.pathReg = new RegExp('^' + objs.path);
         if (!objs.domain) {
           objs.domain = 'global'
