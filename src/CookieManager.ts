@@ -2,7 +2,7 @@
  * @Author: Monve
  * @Date: 2021-12-10 15:59:20
  * @LastEditors: Monve
- * @LastEditTime: 2021-12-13 10:53:51
+ * @LastEditTime: 2021-12-27 10:20:56
  * @FilePath: /cookie-manager/src/CookieManager.ts
  */
 
@@ -34,6 +34,10 @@ export class CookieManager {
   length: number;
 
   constructor() {
+    this.reset()
+  }
+
+  reset = () => {
     this.domains = [];
     this.domainReg = [];
     this.list = {};
