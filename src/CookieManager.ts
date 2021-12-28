@@ -2,7 +2,7 @@
  * @Author: Monve
  * @Date: 2021-12-10 15:59:20
  * @LastEditors: Monve
- * @LastEditTime: 2021-12-27 17:22:34
+ * @LastEditTime: 2021-12-28 13:42:09
  * @FilePath: /cookie-manager/src/CookieManager.ts
  */
 
@@ -147,6 +147,17 @@ export class CookieManager {
       for (const key of Object.keys(this.list[domain])) {
         const { originStr } = this.list[domain][key]
         arr.push(originStr)
+      }
+    }
+    return arr
+  }
+
+  exportStrArr = (): string[] => {
+    const arr: string[] = [];
+    for (const domain of Object.keys(this.list)) {
+      for (const key of Object.keys(this.list[domain])) {
+        const cookie = this.list[domain][key]
+        arr.push(cookieTool.stringify(cookie))
       }
     }
     return arr
