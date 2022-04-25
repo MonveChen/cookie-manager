@@ -2,7 +2,7 @@
  * @Author: Monve
  * @Date: 2022-04-25 16:19:46
  * @LastEditors: Monve
- * @LastEditTime: 2022-04-25 17:09:18
+ * @LastEditTime: 2022-04-25 17:17:27
  * @FilePath: /cookie-manager/src/Utils/simple-cookie.ts
  */
 export type Cookie = {
@@ -44,8 +44,8 @@ export const simpleCookie = {
 
     ].join(';').replace(/;+/g, ';').replace(/;$/, '').replace(/;/g, '; ');
   },
-  parse: function (string: string, path?: string, domain?: string) {
-    let s = string.replace(/;\s+/g, ';').split(';')
+  parse: function (str: string, path?: string, domain?: string) {
+    let s = str.replace(/;\s+/g, ';').split(';')
       .map(function (s) { return s.replace(/\s+\s+/g, '=').split('='); });
 
     let n = s.shift();

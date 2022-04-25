@@ -1,6 +1,6 @@
 {
   "name": "@monvechen/cookie-manager",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "for manager cookies",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
