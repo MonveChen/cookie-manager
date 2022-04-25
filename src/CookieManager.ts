@@ -2,7 +2,7 @@
  * @Author: Monve
  * @Date: 2021-12-10 15:59:20
  * @LastEditors: Monve
- * @LastEditTime: 2022-04-25 16:40:39
+ * @LastEditTime: 2022-04-25 17:59:02
  * @FilePath: /cookie-manager/src/CookieManager.ts
  */
 
@@ -11,10 +11,10 @@ import { Cookie, simpleCookie } from "./Utils/simple-cookie";
 function arrayUnique(arr: Cookie[]) {
   let f: string[] = [];
   let s: Cookie[] = [];
-  for (let i in arr) {
-    const g = JSON.stringify(arr[i]);
+  for (let ele of arr) {
+    const g = JSON.stringify(ele);
     if (f.indexOf(g) == -1) {
-      s.push(arr[i]);
+      s.push(ele);
       f.push(g);
     }
   }
@@ -58,29 +58,28 @@ export class CookieManager {
 
     if (typeof cook == 'string') cook = [cook];
     let t = this;
-    for (const i in cook) {
-      (function () {
-        let objs = simpleCookie.parse(cook[i], defaultPath, defaultDomain) as Cookie & extendType;
-        objs.pathReg = new RegExp('^' + objs.path);
-        if (!objs.domain) {
-          objs.domain = 'global'
-        }
-        if (t.domains.indexOf(objs.domain) === -1) {
-          t.list[objs.domain] = {};
+    for (const ele of cook) {
+      console.log(ele)
+      let objs = simpleCookie.parse(ele, defaultPath, defaultDomain) as Cookie & extendType;
+      objs.pathReg = new RegExp('^' + objs.path);
+      if (!objs.domain) {
+        objs.domain = 'global'
+      }
+      if (t.domains.indexOf(objs.domain) === -1) {
+        t.list[objs.domain] = {};
 
-          t.domains.push(objs.domain);
-          let reg = objs.domain?.match(/^\./) ? objs.domain + '$' : '^' + objs.domain + '$';
-          t.domainReg.push(new RegExp(reg));
-        }
-        objs.originStr = cook[i];
-        t.list[objs.domain][objs.name] = objs;
-      })();
+        t.domains.push(objs.domain);
+        let reg = objs.domain?.match(/^\./) ? objs.domain + '$' : '^' + objs.domain + '$';
+        t.domainReg.push(new RegExp(reg));
+      }
+      objs.originStr = ele;
+      t.list[objs.domain][objs.name] = objs;
     }
 
     //calculate length
     this.length = 0;
-    for (const i in t.list) {
-      for (const _ in t.list[i]) this.length++;
+    for (const ele of Object.keys(t.list)) {
+      for (const _ of ele) this.length++;
     }
 
   };
@@ -88,9 +87,9 @@ export class CookieManager {
   search = (domain: string, path: string, date: string | Date | number, browser: boolean, secure: boolean): Cookie[] => {
 
     let f: Cookie[] = [];
-    for (const i in this.domainReg) {
+    for (const i in Object.keys(this.domainReg)) {
       if (!this.domainReg[i].test(domain)) continue;
-      for (const j in this.list[this.domains[i]])
+      for (const j of Object.keys(this.list[this.domains[i]]))
         f.push(this.list[this.domains[i]][j]);
     }
 
@@ -100,13 +99,13 @@ export class CookieManager {
     path = (path ? path : '/').replace(/\?.*$/, '').replace(/\#.*$/, '');
 
     let g: Cookie[] = [];
-    for (const i in f) {
+    for (const ele of f) {
       if (
-        (f[i] as any).pathReg.test(path) &&
-        (!f[i].expires || date < f[i].expires!.valueOf()) &&
-        !(browser && f[i].httponly) &&
-        !(!secure && f[i].secure)
-      ) g.push(f[i]);
+        (ele as any).pathReg.test(path) &&
+        (!ele.expires || date < ele.expires!.valueOf()) &&
+        !(browser && ele.httponly) &&
+        !(!secure && ele.secure)
+      ) g.push(ele);
     };
 
     return g;
