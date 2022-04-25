@@ -2,7 +2,7 @@
  * @Author: Monve
  * @Date: 2021-12-10 15:59:20
  * @LastEditors: Monve
- * @LastEditTime: 2022-04-25 17:59:02
+ * @LastEditTime: 2022-04-25 18:41:42
  * @FilePath: /cookie-manager/src/CookieManager.ts
  */
 
@@ -59,7 +59,6 @@ export class CookieManager {
     if (typeof cook == 'string') cook = [cook];
     let t = this;
     for (const ele of cook) {
-      console.log(ele)
       let objs = simpleCookie.parse(ele, defaultPath, defaultDomain) as Cookie & extendType;
       objs.pathReg = new RegExp('^' + objs.path);
       if (!objs.domain) {
@@ -87,7 +86,7 @@ export class CookieManager {
   search = (domain: string, path: string, date: string | Date | number, browser: boolean, secure: boolean): Cookie[] => {
 
     let f: Cookie[] = [];
-    for (const i in Object.keys(this.domainReg)) {
+    for (let i = 0; i < this.domainReg.length; i++) {
       if (!this.domainReg[i].test(domain)) continue;
       for (const j of Object.keys(this.list[this.domains[i]]))
         f.push(this.list[this.domains[i]][j]);
