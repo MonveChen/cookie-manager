@@ -2,7 +2,7 @@
  * @Author: Monve
  * @Date: 2022-04-25 16:19:46
  * @LastEditors: Monve
- * @LastEditTime: 2022-04-25 16:40:31
+ * @LastEditTime: 2022-04-25 17:09:18
  * @FilePath: /cookie-manager/src/Utils/simple-cookie.ts
  */
 export type Cookie = {
@@ -75,14 +75,6 @@ export const simpleCookie = {
 
     if (!obj.expires) obj.expires = 0;
     obj.name = n?.shift();
-    n = n?.map((s) => {
-      let f;
-      try {
-        f = decodeURIComponent(s)
-      } catch (e) { f = s }
-      return s
-    })
-
     obj.value = n?.join('=');
     return obj;
   },
