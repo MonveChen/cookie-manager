@@ -2,15 +2,15 @@
  * @Author: Monve
  * @Date: 2021-12-10 15:59:20
  * @LastEditors: Monve
- * @LastEditTime: 2021-12-28 13:42:09
+ * @LastEditTime: 2022-04-25 16:40:39
  * @FilePath: /cookie-manager/src/CookieManager.ts
  */
 
-import * as sCook from 'simple-cookie'
+import { Cookie, simpleCookie } from "./Utils/simple-cookie";
 
-function arrayUnique(arr: sCook.Cookie[]) {
+function arrayUnique(arr: Cookie[]) {
   let f: string[] = [];
-  let s: sCook.Cookie[] = [];
+  let s: Cookie[] = [];
   for (let i in arr) {
     const g = JSON.stringify(arr[i]);
     if (f.indexOf(g) == -1) {
@@ -30,7 +30,7 @@ interface extendType {
 export class CookieManager {
   domains: string[];
   domainReg: RegExp[];
-  list: { [name: string]: { [name: string]: sCook.Cookie & extendType } }
+  list: { [name: string]: { [name: string]: Cookie & extendType } }
   length: number;
 
   constructor() {
@@ -60,7 +60,7 @@ export class CookieManager {
     let t = this;
     for (const i in cook) {
       (function () {
-        let objs = cookieTool.parse(cook[i], defaultPath, defaultDomain) as sCook.Cookie & extendType;
+        let objs = simpleCookie.parse(cook[i], defaultPath, defaultDomain) as Cookie & extendType;
         objs.pathReg = new RegExp('^' + objs.path);
         if (!objs.domain) {
           objs.domain = 'global'
@@ -85,9 +85,9 @@ export class CookieManager {
 
   };
 
-  search = (domain: string, path: string, date: string | Date | number, browser: boolean, secure: boolean): sCook.Cookie[] => {
+  search = (domain: string, path: string, date: string | Date | number, browser: boolean, secure: boolean): Cookie[] => {
 
-    let f: sCook.Cookie[] = [];
+    let f: Cookie[] = [];
     for (const i in this.domainReg) {
       if (!this.domainReg[i].test(domain)) continue;
       for (const j in this.list[this.domains[i]])
@@ -99,7 +99,7 @@ export class CookieManager {
 
     path = (path ? path : '/').replace(/\?.*$/, '').replace(/\#.*$/, '');
 
-    let g: sCook.Cookie[] = [];
+    let g: Cookie[] = [];
     for (const i in f) {
       if (
         (f[i] as any).pathReg.test(path) &&
@@ -113,9 +113,9 @@ export class CookieManager {
 
   };
 
-  tokenize = (arr: sCook.Cookie[]): string => {
+  tokenize = (arr: Cookie[]): string => {
 
-    return cookieTool.tokenize(arrayUnique(arr));
+    return simpleCookie.tokenize(arrayUnique(arr));
 
   };
 
@@ -157,22 +157,10 @@ export class CookieManager {
     for (const domain of Object.keys(this.list)) {
       for (const key of Object.keys(this.list[domain])) {
         const cookie = this.list[domain][key]
-        arr.push(cookieTool.stringify(cookie))
+        arr.push(simpleCookie.stringify(cookie))
       }
     }
     return arr
   }
 
-}
-
-export const cookieTool = {
-  stringify: function (obj: sCook.Cookie) {
-    return sCook.stringify(obj)
-  },
-  parse: function (str: string, defaultPath?: string, defaultDomain?: string) {
-    return sCook.parse(str, defaultPath, defaultDomain)
-  },
-  tokenize: function (arr: sCook.Cookie[]) {
-    return sCook.tokenize(arr)
-  }
 }
