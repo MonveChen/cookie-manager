@@ -1,8 +1,10 @@
 # cookie-manager
+
 for manager cookies
 
 #### state
-refer to https://github.com/juji/cookie-manager
+
+refer to <https://github.com/juji/cookie-manager>
 
 #### Usage
 
@@ -58,4 +60,3 @@ cookieTool.tokenize(
 //clear all
 cm.reset()
 ```
-
