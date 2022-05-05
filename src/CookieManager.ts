@@ -2,7 +2,7 @@
  * @Author: Monve
  * @Date: 2021-12-10 15:59:20
  * @LastEditors: Monve
- * @LastEditTime: 2022-04-25 18:41:42
+ * @LastEditTime: 2022-05-05 16:30:20
  * @FilePath: /cookie-manager/src/CookieManager.ts
  */
 
@@ -47,7 +47,9 @@ export class CookieManager {
 
 
   store = (cook: string[], url?: string): void => {
-
+    if (!cook) {
+      return
+    }
     let defaultPath = undefined
     let defaultDomain = undefined
     if (url) {
